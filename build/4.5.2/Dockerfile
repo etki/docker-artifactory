@@ -1,12 +1,11 @@
-FROM java:8
+FROM java:8-alpine
 
 EXPOSE 80 8091
 
-ADD https://bintray.com/artifact/download/jfrog/artifactory/jfrog-artifactory-oss-4.5.2.zip /tmp/artifactory.zip
-RUN unzip /tmp/artifactory.zip -d /tmp && mv /tmp/artifactory-oss-4.5.2 /var/lib/artifactory
-
-# Development speedup line
-#ADD artifactory /var/lib/artifactory
+RUN wget -q -O /tmp/artifactory.zip \
+    https://bintray.com/artifact/download/jfrog/artifactory/jfrog-artifactory-oss-4.5.2.zip && \
+    unzip /tmp/artifactory.zip -d /tmp && mv /tmp/artifactory-oss-4.5.2 /var/lib/artifactory && \
+    rm /tmp/artifactory.zip
 
 ENV ARTIFACTORY_HOME=/var/lib/artifactory TOMCAT_HOME=/var/lib/tomcat
 ENV CATALINA_OPTS="$JAVA_OPTIONS -Dartifactory.home=$ARTIFACTORY_HOME -Dfile.encoding=UTF8 -Djruby.compile.invokedynamic=false"
